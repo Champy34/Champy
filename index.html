@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khmer Food Express</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background-color: #F7F6F3;
+        }
+        .btn-gold {
+            background-color: #C59A27;
+            color: #FFFFFF;
+        }
+        .btn-gold:hover {
+            background-color: #B08820;
+        }
+        .badge-pill {
+            background-color: #FAF6E9;
+            color: #A3791B;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+            <div class="flex items-center justify-between gap-2 md:gap-4">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-2 md:space-x-3 shrink-0">
+                    <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-black flex items-center justify-center text-white font-bold text-xs md:text-sm">
+                        KF
+                    </div>
+                    <div>
+                        <span class="text-lg md:text-xl font-bold tracking-tight text-gray-900">Khmer<span class="text-amber-600">Food</span></span>
+                        <span class="hidden md:block text-[10px] text-gray-400 font-semibold uppercase -mt-1 tracking-wider">EXPRESS KITCHEN</span>
+                    </div>
+                </div>
+
+                <!-- Global Search Bar (Desktop / Tablet) -->
+                <div class="hidden sm:block flex-1 max-w-lg mx-2 md:mx-4">
+                    <div class="relative">
+                        <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="header-search" oninput="filterMenuItems()" placeholder="ស្វែងរកម្ហូប គ្រឿងផ្សំ ឬប្រភេទ..." 
+                            class="w-full pl-10 pr-4 py-2 bg-gray-100/70 border border-transparent rounded-full text-xs focus:outline-none focus:bg-white focus:border-amber-500 transition">
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center space-x-6 text-xs font-bold text-gray-600">
+                    <a href="#" class="hover:text-amber-600 transition">ទំព័រដើម</a>
+                    <a href="#menu-section" class="hover:text-amber-600 transition">ម៉ឺនុយអាហារ</a>
+                    <a href="#" class="hover:text-amber-600 transition">អំពីយើង</a>
+                    <a href="#" class="hover:text-amber-600 transition">ទំនាក់ទំនង</a>
+                </nav>
+
+                <!-- Action Buttons & Mobile Toggle -->
+                <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                    <!-- Login Button (Desktop) -->
+                    <button onclick="toggleAuthModal('login')" class="hidden sm:block bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 md:px-4 py-2 rounded-xl text-xs font-bold transition">
+                        ចូលគណនី
+                    </button>
+
+                    <!-- Cart Button -->
+                    <button onclick="toggleCart()" class="bg-black text-white p-2 md:p-2.5 rounded-xl relative hover:bg-gray-800 transition flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-gray-600 hover:text-black rounded-xl bg-gray-100">
+                        <svg id="menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Search Bar (Mobile View) -->
+            <div class="block sm:hidden mt-3">
+                <div class="relative">
+                    <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" id="mobile-search" oninput="syncAndFilterMobile(this.value)" placeholder="ស្វែងរកម្ហូប..." 
+                        class="w-full pl-9 pr-4 py-1.5 bg-gray-100/80 border border-transparent rounded-full text-xs focus:outline-none focus:bg-white focus:border-amber-500 transition">
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Slide Drawer Navigation Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-3 transition-all duration-300">
+            <a href="#" class="block text-sm font-bold text-gray-700 hover:text-amber-600 py-1">ទំព័រដើម</a>
+            <a href="#menu-section" onclick="toggleMobileMenu()" class="block text-sm font-bold text-gray-700 hover:text-amber-600 py-1">ម៉ឺនុយអាហារ</a>
+            <a href="#" class="block text-sm font-bold text-gray-700 hover:text-amber-600 py-1">អំពីយើង</a>
+            <a href="#" class="block text-sm font-bold text-gray-700 hover:text-amber-600 py-1">ទំនាក់ទំនង</a>
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                <button onclick="toggleAuthModal('login'); toggleMobileMenu();" class="w-full bg-amber-500 text-white font-bold py-2 rounded-xl text-xs transition">
+                    ចូលគណនី / ចុះឈ្មោះ
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
+        
+        <!-- Banner -->
+        <div class="relative rounded-2xl md:rounded-3xl overflow-hidden mb-8 md:mb-10 bg-gray-900 shadow-sm">
+            <div class="h-[260px] sm:h-[320px] md:h-[380px] w-full relative">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1600&q=80" alt="Khmer Food Banner" class="w-full h-full object-cover opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-8 md:px-14 max-w-xl text-white">
+                    <div class="inline-flex items-center space-x-2 badge-pill text-[10px] md:text-[11px] font-bold px-3 py-1 rounded-full mb-3 md:mb-4 w-fit">
+                        <span>✨ FRESH FROM PHNOM PENH</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl md:text-5xl font-black mb-2 md:mb-3 leading-tight text-amber-100">
+                        ម្ហូបខ្មែរប្រចាំត្រកូល <br class="hidden sm:inline">និងភេសជ្ជៈស្រស់ៗ
+                    </h1>
+                    <p class="text-gray-300 text-xs md:text-sm leading-relaxed mb-4 md:mb-6 line-clamp-2 sm:line-clamp-none">
+                        រសជាតិដើមបែបបុរាណ គ្រឿងផ្សំស្រស់ៗ និងរៀបចំយ៉ាងយកចិត្តទុកដាក់ ដឹកជញ្ជូនរហ័សដល់ទ្វារផ្ទះអ្នក។
+                    </p>
+                    <div>
+                        <a href="#menu-section" class="inline-flex items-center space-x-2 btn-gold font-bold px-5 py-2 md:px-6 md:py-2.5 rounded-full text-xs shadow-md transition">
+                            <span>មើលម៉ឺនុយ</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Section Header -->
+        <div id="menu-section" class="mb-4 md:mb-6">
+            <span class="text-amber-600 font-bold text-[10px] md:text-[11px] uppercase tracking-wider block mb-1">OUR MENU</span>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-gray-900">ជ្រើសរើសមុខម្ហូប</h2>
+                    <p class="text-xs text-gray-400">គ្រឿងផ្សំត្រូវបានបង្ហាញលើគ្រប់មុខម្ហូប ដើម្បីឱ្យអ្នកជ្រើសរើសបានងាយស្រួល</p>
+                </div>
+                <div class="flex items-center text-xs text-emerald-600 font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
+                    <span id="item-count">0 មុខម្ហូបមាននៅទីនេះ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responsive Category Filter Tabs (Scrollable on Mobile) -->
+        <div class="flex items-center gap-2 mb-6 md:mb-8 overflow-x-auto no-scrollbar py-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
+            <button onclick="filterCategory('all')" class="category-btn active shrink-0 bg-black text-white px-4 md:px-5 py-2 rounded-full text-xs font-bold transition whitespace-nowrap">ទាំងអស់</button>
+            <button onclick="filterCategory('khmer')" class="category-btn shrink-0 bg-white text-gray-600 hover:bg-gray-100 border border-gray-200 px-4 md:px-5 py-2 rounded-full text-xs font-bold transition whitespace-nowrap">ម្ហូបខ្មែរ</button>
+            <button onclick="filterCategory('fastfood')" class="category-btn shrink-0 bg-white text-gray-600 hover:bg-gray-100 border border-gray-200 px-4 md:px-5 py-2 rounded-full text-xs font-bold transition whitespace-nowrap">ហ្វាសហ្វ៊ូដ</button>
+            <button onclick="filterCategory('drink')" class="category-btn shrink-0 bg-white text-gray-600 hover:bg-gray-100 border border-gray-200 px-4 md:px-5 py-2 rounded-full text-xs font-bold transition whitespace-nowrap">ភេសជ្ជៈ</button>
+            <button onclick="filterCategory('dessert')" class="category-btn shrink-0 bg-white text-gray-600 hover:bg-gray-100 border border-gray-200 px-4 md:px-5 py-2 rounded-full text-xs font-bold transition whitespace-nowrap">បង្អែម</button>
+        </div>
+
+        <!-- Food Menu Grid -->
+        <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <!-- Dynamic Items Rendered Here via JavaScript -->
+        </div>
+
+        <!-- No Results Message -->
+        <div id="no-results" class="hidden text-center py-16">
+            <p class="text-gray-400 text-sm">រកមិនឃើញមុខម្ហូបដែលអ្នកស្វែងរកទេ!</p>
+        </div>
+
+    </main>
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative transition-all">
+            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center transition">&times;</button>
+            <div class="p-6 md:p-8">
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold text-gray-900 border-b-2 border-amber-500 transition">ចូលគណនី (Sign In)</button>
+                    <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 pb-3 text-sm font-bold text-gray-400 border-b-2 border-transparent transition">ចុះឈ្មោះ (Register)</button>
+                </div>
+
+                <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">លេខទូរស័ព្ទ ឬ អ៊ីមែល</label>
+                        <input type="text" required placeholder="012 345 678 / example@email.com" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">ពាក្យសម្ងាត់</label>
+                        <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <button type="submit" class="w-full btn-gold py-3 rounded-xl font-bold text-xs shadow-md mt-2">ចូលគណនី</button>
+                </form>
+
+                <form id="register-form" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">ឈ្មោះពេញ</label>
+                        <input type="text" required placeholder="ឈ្មោះរបស់អ្នក" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">លេខទូរស័ព្ទ</label>
+                        <input type="tel" required placeholder="012 345 678" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">ពាក្យសម្ងាត់</label>
+                        <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <button type="submit" class="w-full btn-gold py-3 rounded-xl font-bold text-xs shadow-md mt-2">បង្កើតគណនី</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar Modal -->
+    <div id="cart-sidebar" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex justify-end transition-all">
+        <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl">
+            <div class="p-5 border-b flex justify-between items-center bg-gray-900 text-white">
+                <h2 class="text-base font-bold flex items-center">កន្ត្រកទំនិញរបស់អ្នក</h2>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            
+            <div id="cart-items" class="p-5 flex-1 overflow-y-auto space-y-4">
+                <p class="text-gray-400 text-center mt-20 text-sm">កន្ត្រករបស់អ្នកទទេរ</p>
+            </div>
+
+            <div class="p-5 border-t bg-gray-50 space-y-3">
+                <div class="flex justify-between text-xs text-gray-600">
+                    <span>តម្លៃសរុបផលិតផល៖</span>
+                    <span id="cart-subtotal" class="font-bold text-gray-900">$0.00</span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-600">
+                    <span>សេវាដឹកជញ្ជូន៖</span>
+                    <span class="font-bold text-gray-900">$1.50</span>
+                </div>
+                <div class="flex justify-between text-sm font-black text-gray-900 border-t pt-3">
+                    <span>សរុបទាំងអស់៖</span>
+                    <span id="cart-total" class="text-amber-600">$1.50</span>
+                </div>
+                <button onclick="checkout()" class="w-full btn-gold py-3 rounded-xl font-bold shadow-md mt-2 text-xs">បញ្ជាទិញឥឡូវនេះ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 mt-16 md:mt-20 border-t border-gray-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 KhmerFood Express. រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:text-white">ទំព័រដើម</a>
+                <a href="#menu-section" class="hover:text-white">ម៉ឺនុយអាហារ</a>
+                <a href="#" class="hover:text-white">ទំនាក់ទំនង</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        const foodItems = [
+            { 
+                id: 1, 
+                tag: "FISH AMOK",
+                name: "អាម៉ុកត្រី", 
+                category: "khmer", 
+                price: 4.50, 
+                desc: "អាម៉ុកត្រីរ៉ស់ចំហុយស្លឹកចេក ក្រអូបគ្រឿងខ្មែរ និងខ្ទិះដូង", 
+                ingredients: ["ត្រីរ៉ស់", "គ្រឿងអាំងបុក", "ខ្ទិះដូង", "ស្លឹកចេក", "បាយ"],
+                img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Fish_Amok_with_Rice.jpg/1280px-Fish_Amok_with_Rice.jpg" 
+            },
+            { 
+                id: 2, 
+                tag: "BEEF LOK LAK",
+                name: "ឡុកឡាក់សាច់គោ", 
+                category: "khmer", 
+                price: 5.00, 
+                desc: "សាច់គោឆាម៉ត់ផ្អែមឆ្ងាញ់ជាមួយទឹកជ្រលក់អំបិលម្រេចក្រូចឆ្មារ", 
+                ingredients: ["សាច់គោ", "ម្រេចកំពត", "ក្រូចឆ្មារ", "បន្លែសឡាត់", "ពងទាចារៀន"],
+                img: "https://spicygelato.kitchen/wp-content/uploads/2022/03/BeefLokLak-scaled.jpg" 
+            },
+            { 
+                id: 3, 
+                tag: "NOM BANH CHOK",
+                name: "នំបញ្ចុកសម្លប្រហើរ", 
+                category: "khmer", 
+                price: 3.00, 
+                desc: "នំបញ្ចុកស្រស់ជាមួយសម្លប្រហើរត្រីរ៉ស់ បន្លែស្រស់ធម្មជាតិ", 
+                ingredients: ["នំបញ្ចុក", "ត្រីរ៉ស់", "គ្រឿងប្រហើរ", "ត្រសក់", "សណ្តែកបណ្តុះ"],
+                img: "http://thidaskitchen.com/wp-content/uploads/2022/12/Nom-Banh-Chok.jpg" 
+            },
+            { 
+                id: 4, 
+                tag: "PHNOM PENH NOODLES",
+                name: "មីបង្កងភ្នំពេញ", 
+                category: "khmer", 
+                price: 3.50, 
+                desc: "កុយទាវស៊ុបឆ្អឹងជ្រូកផ្អែមឆ្ងាញ់ ជាមួយសាច់ជ្រូក ប្រហិត និងគ្រឿងក្នុង", 
+                ingredients: ["មីលឿង", "សាច់ជ្រូក", "ប្រហិត", "គ្រឿងក្នុង", "ស៊ុតស្ងោរ"],
+                img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 5, 
+                tag: "KHMER CURRY SOUP",
+                name: "ការីខ្មែរ", 
+                category: "khmer", 
+                price: 4.25, 
+                desc: "សម្លម្ជូរគ្រឿងបុកបែបបុរាណ ជាមួយសាច់គោ និងត្រកួន", 
+                ingredients: ["សាច់គោ", "គ្រឿងការី", "ខ្ទិះដូង", "ដំឡូងបារាំង"],
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 6, 
+                tag: "HEALTHY FOOD",
+                name: "អាហារសុខភាព", 
+                category: "khmer", 
+                price: 4.00, 
+                desc: "សម្លកកោបែបអ្នកខេត្ត អង្ករលីងឈ្ងុយ និងបន្លែចម្រុះមុខ", 
+                ingredients: ["បន្លែចម្រុះ", "តៅហ៊ូ", "ពោត", "សណ្តែកសៀង"],
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 8, 
+                tag: "CHICKEN BURGER",
+                name: "ប៊ឺហ្គឺសាច់មាន់", 
+                category: "fastfood", 
+                price: 4.50, 
+                desc: "សាច់មាន់បំពងស្រួយក្រហមឆ្អិនល្អ ជាមួយឈីសពិសេស", 
+                ingredients: ["សាច់មាន់", "នំបុ័ងប៊ឺហ្គឺ", "បន្លែសឡាត់", "ទឹកជ្រលក់ពិសេស"],
+                img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 9, 
+                tag: "DOUBLE CHEESE PIZZA",
+                name: "ភីហ្សាឈីសទ្វេដង", 
+                category: "fastfood", 
+                price: 8.00, 
+                desc: "ភីហ្សាក្រៀមស្រួយជាមួយម៉ូហ្សារីឡាឈីសនាំចូល", 
+                ingredients: ["ម្សៅភីហ្សា", "ឈីសម៉ូហ្សារីឡា", "ប៉េងប៉ោះ", "គ្រឿងទេស"],
+                img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 10, 
+                tag: "MUNGBEAN SOUP",
+                name: "បបរសណ្តែកខៀវ", 
+                category: "dessert", 
+                price: 1.50, 
+                desc: "បង្អែមបបរសណ្តែកខៀវចម្អិនទន់ល្មម ស្រោចខ្ទិះដូងខាប់ស្ករត្នោត ឈ្ងុយឆ្ងាញ់", 
+                ingredients: ["សណ្តែកខៀវ", "ខ្ទិះដូង", "ស្ករត្នោត", "គ្រាប់សគូ"],
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 11, 
+                tag: "NUM PLAE AI",
+                name: "នំផ្លែអាយ", 
+                category: "dessert", 
+                price: 1.25, 
+                desc: "នំផ្លែអាយម្សៅដំណើបទន់ល្មើយ ស្នូលស្ករត្នោត ថែមដូងកោសស្រស់ៗពីលើ", 
+                ingredients: ["ម្សៅដំណើប", "ស្ករត្នោត", "សាច់ដូងកោស", "ល្ងស"],
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 12, 
+                tag: "BANANA IN COCONUT MILK",
+                name: "ចេកខ្ទិះ", 
+                category: "dessert", 
+                price: 1.50, 
+                desc: "ចេកណាំវ៉ាស្ងោរជាមួយខ្ទិះដូងស្រស់ គ្រាប់សគូ និងតៅស៊ួន", 
+                ingredients: ["ចេកណាំវ៉ា", "ខ្ទិះដូង", "គ្រាប់សគូ", "ស្ករត្នោត"],
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" 
+            },
+            { 
+                id: 13, 
+                tag: "KHMER LOT DESSERT",
+                name: "បង្អែមលតខ្ទិះ", 
+                category: "dessert", 
+                price: 1.75, 
+                desc: "លតបៃតងក្លិនស្លឹកតយ ញ៉ាំជាមួយទឹកខ្ទិះដូង និងទឹកស្ករត្នោតខាប់ រួមទាំងទឹកកកឈូស", 
+                ingredients: ["ម្សៅលតស្លឹកតយ", "ខ្ទិះដូង", "ទឹកស្ករត្នោត", "ទឹកកក"],
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" 
+            }
+        ];
+
+        let cart = [];
+        let activeCategory = 'all';
+
+        function renderMenu(items) {
+            const grid = document.getElementById('menu-grid');
+            const noResults = document.getElementById('no-results');
+            const itemCount = document.getElementById('item-count');
+
+            if (itemCount) {
+                itemCount.textContent = `${items.length} មុខម្ហូបមាននៅទីនេះ`;
+            }
+
+            if (items.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            grid.innerHTML = items.map(item => `
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border border-gray-100 flex flex-col justify-between group">
+                    <div>
+                        <div class="overflow-hidden h-44 relative">
+                            <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${item.name}">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-gray-800 text-[9px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                                ${item.tag}
+                            </span>
+                        </div>
+                        
+                        <div class="p-4">
+                            <h3 class="font-bold text-gray-900 text-base mb-0.5">${item.name}</h3>
+                            <p class="text-gray-400 text-[11px] mb-3 uppercase tracking-wider font-semibold">${item.tag}</p>
+                            <p class="text-gray-500 text-xs mb-4 line-clamp-2 leading-relaxed">${item.desc}</p>
+                            
+                            <div class="border border-amber-100 bg-amber-50/40 rounded-xl p-2.5 mb-2">
+                                <div class="flex justify-between items-center text-[11px] font-bold text-amber-800 cursor-pointer">
+                                    <span>គ្រឿងផ្សំ / INGREDIENTS</span>
+                                    <svg class="w-3 h-3 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                                <div class="text-[10px] text-gray-600 mt-1.5 flex flex-wrap gap-1">
+                                    ${item.ingredients ? item.ingredients.map(ing => `<span class="bg-white/80 px-1.5 py-0.5 rounded text-gray-600 border border-amber-100/50">• ${ing}</span>`).join(' ') : 'គ្រឿងផ្សំធម្មជាតិ'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 pt-0 flex justify-between items-center">
+                        <span class="text-gray-900 font-black text-lg">$${item.price.toFixed(2)}</span>
+                        <button onclick="addToCart('${item.name}', ${item.price})" class="btn-gold text-white px-4 py-1.5 rounded-lg flex items-center justify-center font-bold text-xs shadow-sm hover:opacity-95 transition space-x-1">
+                            <span>+ បន្ថែម</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const openIcon = document.getElementById('menu-icon-open');
+            const closeIcon = document.getElementById('menu-icon-close');
+            
+            mobileMenu.classList.toggle('hidden');
+            openIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        }
+
+        function syncAndFilterMobile(value) {
+            const headerSearch = document.getElementById('header-search');
+            if (headerSearch) headerSearch.value = value;
+            filterMenuItems();
+        }
+
+        function filterMenuItems() {
+            const headerSearch = document.getElementById('header-search');
+            const mobileSearch = document.getElementById('mobile-search');
+            const query = (headerSearch?.value || mobileSearch?.value || '').toLowerCase();
+
+            const filtered = foodItems.filter(item => {
+                const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+                const matchesQuery = item.name.toLowerCase().includes(query) || 
+                                     item.desc.toLowerCase().includes(query) ||
+                                     item.tag.toLowerCase().includes(query) ||
+                                     (item.ingredients && item.ingredients.some(i => i.toLowerCase().includes(query)));
+                return matchesCategory && matchesQuery;
+            });
+            renderMenu(filtered);
+        }
+
+        function filterCategory(category) {
+            activeCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-black', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600');
+            });
+            
+            if (window.event && window.event.target) {
+                const target = window.event.target;
+                if (target.classList.contains('category-btn')) {
+                    target.classList.remove('bg-white', 'text-gray-600');
+                    target.classList.add('bg-black', 'text-white');
+                }
+            }
+
+            filterMenuItems();
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('hidden');
+        }
+
+        function addToCart(name, price) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            const cartTotal = document.getElementById('cart-total');
+
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalCount;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-400 text-center mt-20 text-sm">កន្ត្រករបស់អ្នកទទេរ</p>';
+                cartSubtotal.textContent = '$0.00';
+                cartTotal.textContent = '$1.50';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                subtotal += item.price * item.quantity;
+                html += `
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                        <div>
+                            <h4 class="font-bold text-gray-900 text-xs">${item.name}</h4>
+                            <p class="text-amber-600 text-[11px]">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="font-bold text-xs text-gray-900">$${(item.price * item.quantity).toFixed(2)}</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 text-[11px] font-bold">លុប</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItems.innerHTML = html;
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            cartTotal.textContent = `$${(subtotal + 1.50).toFixed(2)}`;
+        }
+
+        function checkout() {
+            if (cart.length === 0) return alert('សូមជ្រើសរើសមុខម្ហូបជាមុនសិន!');
+            alert('ការបញ្ជាទិញរបស់អ្នកបានជោគជ័យ!');
+            cart = [];
+            updateCartUI();
+            toggleCart();
+        }
+
+        function toggleAuthModal(defaultTab = 'login') {
+            const modal = document.getElementById('auth-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                switchAuthTab(defaultTab);
+            }
+        }
+
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                
+                tabLogin.className = "flex-1 pb-3 text-sm font-bold text-gray-900 border-b-2 border-amber-500 transition";
+                tabRegister.className = "flex-1 pb-3 text-sm font-bold text-gray-400 border-b-2 border-transparent transition";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                
+                tabRegister.className = "flex-1 pb-3 text-sm font-bold text-gray-900 border-b-2 border-amber-500 transition";
+                tabLogin.className = "flex-1 pb-3 text-sm font-bold text-gray-400 border-b-2 border-transparent transition";
+            }
+        }
+
+        function handleAuthSubmit(event, type) {
+            event.preventDefault();
+            alert(type === 'login' ? 'ចូលគណនីបានជោគជ័យ!' : 'ការចុះឈ្មោះបានជោគជ័យ!');
+            toggleAuthModal();
+        }
+
+        // Initial Render
+        renderMenu(foodItems);
+    </script>
+</body>
+</html>
